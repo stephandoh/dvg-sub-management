@@ -56,7 +56,7 @@ jobs:
             --env dev \
             --org ${{ secrets.APIGEE_ORG }} \
             --token $TOKEN \
-            --wait
+            --ovr --wait
 
       - name: Wait for Hybrid Synchronizer
         run: sleep 45
