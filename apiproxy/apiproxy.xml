@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<APIProxy revision="1" name="dvg-subscriber-mgmt">
+<APIProxy revision="1" name="dvg-subscriber-mgmt" configurationVersion="4.0">
   <Description>DVG Subscriber Management API - Balance, Bundles and Profile</Description>
   <DisplayName>DVG Subscriber Management v1</DisplayName>
   <Policies>
