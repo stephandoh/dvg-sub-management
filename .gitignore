@@ -1,0 +1,12 @@
+# Credentials — never commit these
+*.json.key
+apigee-cicd-key.json
+/tmp/sa.json
+sa.json
+
+# Node
+node_modules/
+
+# Test output — only ignore junit XML, not proxy XML
+test-results.xml
+**/test-results*.xml

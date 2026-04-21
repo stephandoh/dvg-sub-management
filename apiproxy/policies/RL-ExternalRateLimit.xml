@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  RL-ExternalRateLimit
+  Quota for external consumers: 100 requests per minute per API key.
+-->
+<Quota name="RL-ExternalRateLimit">
+  <DisplayName>RL-ExternalRateLimit</DisplayName>
+  <Allow countRef="verifyapikey.VK-VerifyAPIKey.apiproduct.developer.quota.limit"/>
+  <Interval ref="verifyapikey.VK-VerifyAPIKey.apiproduct.developer.quota.interval"/>
+  <TimeUnit ref="verifyapikey.VK-VerifyAPIKey.apiproduct.developer.quota.timeunit"/>
+  <Identifier ref="verifyapikey.VK-VerifyAPIKey.client_id"/>
+  <Distributed>true</Distributed>
+  <Synchronous>true</Synchronous>
+</Quota>

@@ -1,0 +1,91 @@
+{
+  "info": {
+    "name": "DVG Subscriber Management API Tests",
+    "description": "Integration tests for DVG Subscriber Management proxy on Apigee Hybrid",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "{{baseUrl}}" },
+    { "key": "validMSISDN", "value": "233241234567" },
+    { "key": "invalidMSISDN", "value": "000000" },
+    { "key": "apiKey", "value": "{{apiKey}}" }
+  ],
+  "item": [
+    {
+      "name": "Balance — Valid MSISDN with API Key",
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+        "pm.test('Has DVG gateway header', () => pm.response.to.have.header('X-Powered-By', 'DVG-API-Gateway'));",
+        "pm.test('Has request ID', () => pm.response.to.have.header('X-Request-ID'));",
+        "pm.test('No internal server header', () => pm.expect(pm.response.headers.get('Server')).to.be.undefined);",
+        "pm.test('Response time under 3s', () => pm.expect(pm.response.responseTime).to.be.below(3000));"
+      ]}}],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "x-api-key", "value": "{{apiKey}}" }],
+        "url": "{{baseUrl}}/dvg/subscribers/v1/{{validMSISDN}}/balance"
+      }
+    },
+    {
+      "name": "Balance — Missing API Key returns 401",
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status is 401', () => pm.response.to.have.status(401));",
+        "pm.test('Error code is SUB-401', () => {",
+        "  const body = pm.response.json();",
+        "  pm.expect(body.error).to.eql('UNAUTHORIZED');",
+        "  pm.expect(body.code).to.eql('SUB-401');",
+        "});"
+      ]}}],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/dvg/subscribers/v1/{{validMSISDN}}/balance"
+      }
+    },
+    {
+      "name": "Bundles — Valid MSISDN with API Key",
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+        "pm.test('Has DVG gateway header', () => pm.response.to.have.header('X-Powered-By', 'DVG-API-Gateway'));",
+        "pm.test('Cache-Control is no-store', () => pm.response.to.have.header('Cache-Control', 'no-store'));",
+        "pm.test('Response time under 3s', () => pm.expect(pm.response.responseTime).to.be.below(3000));"
+      ]}}],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "x-api-key", "value": "{{apiKey}}" }],
+        "url": "{{baseUrl}}/dvg/subscribers/v1/{{validMSISDN}}/bundles"
+      }
+    },
+    {
+      "name": "Profile — No OAuth Token returns 401",
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status is 401', () => pm.response.to.have.status(401));",
+        "pm.test('Error is UNAUTHORIZED', () => {",
+        "  const body = pm.response.json();",
+        "  pm.expect(body.error).to.eql('UNAUTHORIZED');",
+        "});"
+      ]}}],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/dvg/subscribers/v1/{{validMSISDN}}/profile"
+      }
+    },
+    {
+      "name": "Balance — Invalid MSISDN returns 400",
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+        "pm.test('Error code is SUB-001', () => {",
+        "  const body = pm.response.json();",
+        "  pm.expect(body.code).to.eql('SUB-001');",
+        "  pm.expect(body.error).to.eql('INVALID_MSISDN');",
+        "});"
+      ]}}],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "x-api-key", "value": "{{apiKey}}" }],
+        "url": "{{baseUrl}}/dvg/subscribers/v1/{{invalidMSISDN}}/balance"
+      }
+    }
+  ]
+}

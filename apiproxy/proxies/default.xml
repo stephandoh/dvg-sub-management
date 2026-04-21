@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ProxyEndpoint name="default">
+  <Description>DVG Subscriber Management - Main Proxy Endpoint</Description>
+
+  <HTTPProxyConnection>
+    <BasePath>/dvg/subscribers/v1</BasePath>
+  </HTTPProxyConnection>
+
+  <PreFlow name="PreFlow">
+    <Request>
+      <Step><Name>SA-SpikeArrest</Name></Step>
+      <Step><Name>VA-ValidateMSISDN</Name></Step>
+    </Request>
+    <Response/>
+  </PreFlow>
+
+  <Flows>
+
+    <!-- GET /dvg/subscribers/v1/{msisdn}/balance -->
+    <Flow name="GetBalance">
+      <Description>Get subscriber account balance</Description>
+      <Request>
+        <Step><Name>VK-VerifyAPIKey</Name></Step>
+        <Step><Name>RL-ExternalRateLimit</Name></Step>
+        <Step><Name>AM-SetTargetHeaders</Name></Step>
+      </Request>
+      <Response>
+        <Step><Name>AM-MaskExternalResponse</Name></Step>
+      </Response>
+      <Condition>(proxy.pathsuffix MatchesPath "/{msisdn}/balance") and (request.verb = "GET")</Condition>
+    </Flow>
+
+    <!-- GET /dvg/subscribers/v1/{msisdn}/bundles -->
+    <Flow name="GetBundles">
+      <Description>Get subscriber active data and voice bundles</Description>
+      <Request>
+        <Step><Name>VK-VerifyAPIKey</Name></Step>
+        <Step><Name>RL-ExternalRateLimit</Name></Step>
+        <Step><Name>AM-SetTargetHeaders</Name></Step>
+      </Request>
+      <Response>
+        <Step><Name>AM-MaskExternalResponse</Name></Step>
+      </Response>
+      <Condition>(proxy.pathsuffix MatchesPath "/{msisdn}/bundles") and (request.verb = "GET")</Condition>
+    </Flow>
+
+    <!-- GET /dvg/subscribers/v1/{msisdn}/profile -->
+    <!-- INTERNAL ONLY - requires OAuth2 token -->
+    <Flow name="GetProfile">
+      <Description>Get full subscriber profile - internal systems only</Description>
+      <Request>
+        <Step><Name>OA-VerifyAccessToken</Name></Step>
+        <Step><Name>RL-InternalRateLimit</Name></Step>
+        <Step><Name>AM-SetTargetHeaders</Name></Step>
+      </Request>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/{msisdn}/profile") and (request.verb = "GET")</Condition>
+    </Flow>
+
+  </Flows>
+
+  <PostFlow name="PostFlow">
+    <Request/>
+    <Response/>
+  </PostFlow>
+
+  <FaultRules>
+    <FaultRule name="InvalidMSISDN">
+      <Step><Name>RF-InvalidMSISDN</Name></Step>
+      <Condition>(fault.name = "InvalidMSISDN")</Condition>
+    </FaultRule>
+    <FaultRule name="Unauthorized">
+      <Step><Name>RF-Unauthorized</Name></Step>
+      <Condition>(fault.name = "FailedToResolveAPIKey") or
+                 (fault.name = "InvalidApiKey") or
+                 (fault.name = "InvalidAccessToken")</Condition>
+    </FaultRule>
+    <FaultRule name="NotFound">
+      <Step><Name>RF-NotFound</Name></Step>
+      <Condition>(fault.name = "ResourceNotFound")</Condition>
+    </FaultRule>
+  </FaultRules>
+
+  <RouteRule name="default">
+    <TargetEndpoint>default</TargetEndpoint>
+  </RouteRule>
+
+</ProxyEndpoint>

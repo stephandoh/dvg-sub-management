@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  OA-VerifyAccessToken
+  Verifies OAuth2 Bearer token for internal endpoints.
+  Required scope: dvg.subscriber.profile.read
+-->
+<OAuthV2 name="OA-VerifyAccessToken">
+  <DisplayName>OA-VerifyAccessToken</DisplayName>
+  <Operation>VerifyAccessToken</Operation>
+  <Scope>dvg.subscriber.profile.read</Scope>
+</OAuthV2>

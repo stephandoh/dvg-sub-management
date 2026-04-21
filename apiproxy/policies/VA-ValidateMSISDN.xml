@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  VA-ValidateMSISDN
+  Extracts MSISDN from URL path for use in downstream policies and headers.
+-->
+<ExtractVariables name="VA-ValidateMSISDN">
+  <DisplayName>VA-ValidateMSISDN</DisplayName>
+  <URIPath>
+    <Pattern ignoreCase="true">/{msisdn}/{action}</Pattern>
+  </URIPath>
+  <VariablePrefix>subscriber</VariablePrefix>
+  <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
+</ExtractVariables>

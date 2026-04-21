@@ -1,0 +1,40 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - apiproxy/**
+
+jobs:
+  deploy-prod:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Install apigeecli
+        run: |
+          curl -L https://raw.githubusercontent.com/apigee/apigeecli/main/downloadLatest.sh | sh
+          echo "$HOME/.apigeecli/bin" >> $GITHUB_PATH
+
+      - name: Deploy to Production
+        run: |
+          TOKEN=$(gcloud auth print-access-token)
+          apigeecli apis deploy \
+            --name dvg-subscriber-mgmt \
+            --env prod \
+            --org ${{ secrets.APIGEE_ORG }} \
+            --token $TOKEN \
+            --wait
+
+      - name: Wait for Hybrid Synchronizer
+        run: sleep 60

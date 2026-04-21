@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  SA-SpikeArrest
+  Global burst protection: max 200 requests per second across ALL consumers.
+  First line of defence — runs before any auth.
+-->
+<SpikeArrest name="SA-SpikeArrest">
+  <DisplayName>SA-SpikeArrest</DisplayName>
+  <Rate>200ps</Rate>
+  <UseEffectiveCount>true</UseEffectiveCount>
+</SpikeArrest>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  AM-SetTargetHeaders
+  Adds internal routing headers before forwarding to DVG backend.
+  Strips consumer credentials before hitting the backend.
+-->
+<AssignMessage name="AM-SetTargetHeaders">
+  <DisplayName>AM-SetTargetHeaders</DisplayName>
+  <AssignTo createNew="false" type="request"/>
+  <Set>
+    <Headers>
+      <Header name="X-DVG-Source">Apigee-{environment.name}</Header>
+      <Header name="X-DVG-Proxy">{apiproxy.name}</Header>
+      <Header name="X-DVG-MessageID">{messageid}</Header>
+      <Header name="X-DVG-MSISDN">{subscriber.msisdn}</Header>
+    </Headers>
+  </Set>
+  <Remove>
+    <Headers>
+      <Header name="x-api-key"/>
+      <Header name="Authorization"/>
+    </Headers>
+  </Remove>
+</AssignMessage>

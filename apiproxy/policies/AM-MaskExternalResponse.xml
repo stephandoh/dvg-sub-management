@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  AM-MaskExternalResponse
+  Adds DVG branding headers and removes internal backend details
+  from all outbound responses to external consumers.
+-->
+<AssignMessage name="AM-MaskExternalResponse">
+  <DisplayName>AM-MaskExternalResponse</DisplayName>
+  <AssignTo createNew="false" type="response"/>
+  <Set>
+    <Headers>
+      <Header name="X-Powered-By">DVG-API-Gateway</Header>
+      <Header name="X-Request-ID">{messageid}</Header>
+      <Header name="Cache-Control">no-store</Header>
+      <Header name="X-Content-Type-Options">nosniff</Header>
+    </Headers>
+  </Set>
+  <Remove>
+    <Headers>
+      <Header name="Server"/>
+      <Header name="X-Backend-Server"/>
+      <Header name="Via"/>
+    </Headers>
+  </Remove>
+</AssignMessage>

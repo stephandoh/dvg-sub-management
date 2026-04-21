@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  VK-VerifyAPIKey
+  Verifies the API key passed by external consumers.
+  Key must be passed in header: x-api-key
+-->
+<VerifyAPIKey name="VK-VerifyAPIKey">
+  <DisplayName>VK-VerifyAPIKey</DisplayName>
+  <APIKey ref="request.header.x-api-key"/>
+</VerifyAPIKey>

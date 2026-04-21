@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  AM-SetErrorResponse
+  Ensures all errors follow DVG standard error response format.
+-->
+<AssignMessage name="AM-SetErrorResponse">
+  <DisplayName>AM-SetErrorResponse</DisplayName>
+  <AssignTo createNew="false" type="response"/>
+  <Set>
+    <Headers>
+      <Header name="Content-Type">application/json</Header>
+      <Header name="X-Request-ID">{messageid}</Header>
+    </Headers>
+  </Set>
+</AssignMessage>

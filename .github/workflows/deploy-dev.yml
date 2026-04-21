@@ -1,0 +1,74 @@
+name: Deploy to Dev
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - apiproxy/**
+      - .github/workflows/deploy-dev.yml
+
+jobs:
+  deploy:
+    name: Lint, Bundle and Deploy to Dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install apigeelint
+        run: npm install -g apigeelint
+
+      - name: Lint proxy bundle
+        run: apigeelint -s apiproxy/ -f table
+
+      - name: Bundle proxy
+        run: zip -r proxy-bundle.zip apiproxy/
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Install apigeecli
+        run: |
+          curl -L https://raw.githubusercontent.com/apigee/apigeecli/main/downloadLatest.sh | sh
+          echo "$HOME/.apigeecli/bin" >> $GITHUB_PATH
+
+      - name: Import proxy to Apigee
+        run: |
+          TOKEN=$(gcloud auth print-access-token)
+          apigeecli apis create bundle \
+            --name dvg-subscriber-mgmt \
+            --proxy-zip proxy-bundle.zip \
+            --org ${{ secrets.APIGEE_ORG }} \
+            --token $TOKEN
+
+      - name: Deploy to Dev environment
+        run: |
+          TOKEN=$(gcloud auth print-access-token)
+          apigeecli apis deploy \
+            --name dvg-subscriber-mgmt \
+            --env dev \
+            --org ${{ secrets.APIGEE_ORG }} \
+            --token $TOKEN \
+            --wait
+
+      - name: Wait for Hybrid Synchronizer
+        run: sleep 45
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run integration tests
+        run: |
+          newman run tests/dvg-subscriber.postman_collection.json \
+            --env-var baseUrl=${{ secrets.DEV_PROXY_URL }} \
+            --env-var apiKey=${{ secrets.DEV_API_KEY }} \
+            --reporters cli,junit \
+            --reporter-junit-export test-results.xml \
+            --bail

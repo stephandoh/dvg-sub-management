@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RaiseFault name="RF-NotFound">
+  <DisplayName>RF-NotFound</DisplayName>
+  <FaultResponse>
+    <Set>
+      <StatusCode>404</StatusCode>
+      <ReasonPhrase>Not Found</ReasonPhrase>
+      <Payload contentType="application/json">
+        {
+          "error": "SUBSCRIBER_NOT_FOUND",
+          "message": "No subscriber found for the provided MSISDN.",
+          "code": "SUB-404",
+          "requestId": "{messageid}"
+        }
+      </Payload>
+    </Set>
+  </FaultResponse>
+</RaiseFault>

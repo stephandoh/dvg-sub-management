@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RaiseFault name="RF-InvalidMSISDN">
+  <DisplayName>RF-InvalidMSISDN</DisplayName>
+  <FaultResponse>
+    <Set>
+      <StatusCode>400</StatusCode>
+      <ReasonPhrase>Bad Request</ReasonPhrase>
+      <Payload contentType="application/json">
+        {
+          "error": "INVALID_MSISDN",
+          "message": "The MSISDN provided is not valid.",
+          "code": "SUB-001",
+          "requestId": "{messageid}"
+        }
+      </Payload>
+    </Set>
+  </FaultResponse>
+</RaiseFault>
